@@ -6,20 +6,7 @@ const rows = 4, cols = 4;
 let pieces = [];
 let pieceWidth, pieceHeight;
 let selectedPiece = null;
-
-document.documentElement.style.overflowX = "hidden";
-document.body.style.overflowX = "hidden";
-document.documentElement.style.width = "100vw";
-document.body.style.width = "100vw";
-
-document.documentElement.style.height = "auto";
-document.body.style.height = "auto";
-document.body.style.minHeight = "100vh";
-
-const header = document.getElementById("header");
-if (header) {
-    header.style.paddingTop = "20px";
-}
+let touchStartPos = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
@@ -31,24 +18,24 @@ img.onload = function() {
 };
 
 function resizeCanvas() {
-    const aspectRatio = img.width / img.height;
     const maxWidth = Math.min(window.innerWidth * 0.9, 600);
+    const maxHeight = Math.min(window.innerHeight * 0.9, 1100);
+    const aspectRatio = img.width / img.height;
+    
     let newWidth = maxWidth;
     let newHeight = newWidth / aspectRatio;
-
-    const minHeight = 300;
-    if (newHeight < minHeight) {
-        newHeight = minHeight;
+    
+    if (newHeight > maxHeight) {
+        newHeight = maxHeight;
         newWidth = newHeight * aspectRatio;
     }
-
+    
     canvas.width = newWidth;
     canvas.height = newHeight;
-    canvas.style.marginBottom = "20px";
-
+    
     pieceWidth = img.width / cols;
     pieceHeight = img.height / rows;
-
+    
     initializePuzzle();
 }
 
@@ -75,7 +62,6 @@ function shufflePieces() {
 
 function drawPuzzle() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     for (let piece of pieces) {
         ctx.drawImage(img, 
             piece.correctX * pieceWidth, piece.correctY * pieceHeight, pieceWidth, pieceHeight, 
@@ -92,34 +78,24 @@ function checkCompletion() {
     }
 }
 
-function getTouchPos(event) {
+function getPointerPos(event) {
     const rect = canvas.getBoundingClientRect();
     return {
-        x: Math.floor(((event.touches[0].clientX - rect.left) / canvas.width) * cols),
-        y: Math.floor(((event.touches[0].clientY - rect.top) / canvas.height) * rows)
+        x: Math.floor((event.clientX - rect.left) / (canvas.width / cols)),
+        y: Math.floor((event.clientY - rect.top) / (canvas.height / rows))
     };
 }
 
 canvas.addEventListener("pointerdown", function(e) {
     e.preventDefault();
-    let pos = e.type.includes("touch") ? getTouchPos(e) : { 
-        x: Math.floor(e.offsetX / (canvas.width / cols)), 
-        y: Math.floor(e.offsetY / (canvas.height / rows)) 
-    };
+    let pos = getPointerPos(e);
     selectedPiece = pieces.find(p => p.x === pos.x && p.y === pos.y);
-});
-
-canvas.addEventListener("pointermove", function(e) {
-    if (!selectedPiece) return;
-    e.preventDefault();
+    touchStartPos = pos;
 });
 
 canvas.addEventListener("pointerup", function(e) {
     if (!selectedPiece) return;
-    let pos = e.type.includes("touch") ? getTouchPos(e) : { 
-        x: Math.floor(e.offsetX / (canvas.width / cols)), 
-        y: Math.floor(e.offsetY / (canvas.height / rows)) 
-    };
+    let pos = getPointerPos(e);
     let targetPiece = pieces.find(p => p.x === pos.x && p.y === pos.y);
     
     if (targetPiece && targetPiece !== selectedPiece) {
@@ -133,29 +109,26 @@ canvas.addEventListener("pointerup", function(e) {
 
 canvas.addEventListener("touchstart", function(e) {
     e.preventDefault();
-    canvas.dispatchEvent(new PointerEvent("pointerdown", e.touches[0]));
-}, { passive: false });
-
-canvas.addEventListener("touchmove", function(e) {
-    e.preventDefault();
-    canvas.dispatchEvent(new PointerEvent("pointermove", e.touches[0]));
+    let touch = e.touches[0];
+    canvas.dispatchEvent(new PointerEvent("pointerdown", { clientX: touch.clientX, clientY: touch.clientY }));
 }, { passive: false });
 
 canvas.addEventListener("touchend", function(e) {
     e.preventDefault();
-    canvas.dispatchEvent(new PointerEvent("pointerup", e.changedTouches[0]));
+    let touch = e.changedTouches[0];
+    canvas.dispatchEvent(new PointerEvent("pointerup", { clientX: touch.clientX, clientY: touch.clientY }));
 }, { passive: false });
 
-// Управление музыкой
-const audio = document.getElementById("bg-music");
-audio.volume = 0.5;
-
-document.getElementById("toggle-music").addEventListener("click", function() {
-    if (audio.paused) {
-        audio.play();
-        this.textContent = "🔊";
-    } else {
-        audio.pause();
-        this.textContent = "🔈";
-    }
-});
+    // Управление музыкой
+    const audio = document.getElementById("bg-music");
+    audio.volume = 0.5;
+    
+    document.getElementById("toggle-music").addEventListener("click", function() {
+        if (audio.paused) {
+            audio.play();
+            this.textContent = "🔊";
+        } else {
+            audio.pause();
+            this.textContent = "🔈";
+        }
+    });
