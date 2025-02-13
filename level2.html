@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кликер</title>
+    <style>
+        body {
+            font-family: 'Dancing Script', cursive;
+            text-align: center;
+            background: #ffe6e6;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #d63384;
+        }
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        #click-title {
+            font-size: 1.5rem;
+            color: #d63384;
+            margin-bottom: 10px;
+        }
+        #click-image {
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+        #score {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        #message {
+            font-size: 1.2rem;
+            color: #d63384;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        #autoclicker-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .autoclicker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        button {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #e73370;
+        }
+        #congrats-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        #toggle-music {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <audio id="bg-music" loop>
+        <source src="music2.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+    <button id="toggle-music">🔈</button>
+    
+    <h1>С Днём Святого Валентина, Родная!</h1>
+    <div id="game-container">
+        <p id="click-title">Накликай 1000 очков!</p>
+        <img id="click-image" src="click-image.svg" alt="Кликни меня!">
+        <p id="score">Очки: 0</p>
+        <p id="message"></p>
+        <button id="clear-data-btn">Очистить данные</button>
+        <div id="autoclicker-container">
+            <div class="autoclicker">
+                <img src="autoclicker1.svg" alt="Автокликер 1" width="50">
+                <p>+1 клик/сек</p>
+                <p>Цена: 50</p>
+                <button id="buy-autoclicker1">Купить</button>
+            </div>
+            <div class="autoclicker">
+                <img src="autoclicker2.svg" alt="Автокликер 2" width="50">
+                <p>+5 кликов/сек</p>
+                <p>Цена: 150</p>
+                <button id="buy-autoclicker2">Купить</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="congrats-modal">
+        <h2>Поздравляю! 🎉</h2>
+        <p>Ты набрала 1000 очков!</p>
+        <button id="next-btn" onclick="window.location.href='finish.html'">Дальше</button>
+    </div>
+    
+    <script>
+        let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
+        const goal = 1000;
+        let autoclickers = localStorage.getItem('autoclickers') ? JSON.parse(localStorage.getItem('autoclickers')) : { autoclicker1: 0, autoclicker2: 0 };
+        const messages = [
+            "Ты потрясающая! 💖",
+            "Ты делаешь этот мир лучше! ✨",
+            "Я горжусь тобой! 😊",
+            "Ты самая замечательная! 💕",
+            "Продолжай, у тебя всё получится! 🌟",
+            "Ты мой маленький Наркотёнок! 💖",
+            "Я верю в тебя! ✨",
+            "Ты самая волшембная! ✨",
+            "Ты моя жизнь! 💕",
+            "Моя любимая девочка! 😊",
+            "Я так сильно тебя люблю! 🌟"
+        ];
+
+        function updateScore() {
+            document.getElementById("score").textContent = `Очки: ${score}`;
+            if (score % 10 === 0 && score > 0) {
+                document.getElementById("message").textContent = messages[Math.floor(Math.random() * messages.length)];
+            }
+            if (score >= goal) {
+                document.getElementById("congrats-modal").style.display = "block";
+            }
+        }
+
+        document.getElementById("click-image").addEventListener("click", () => {
+            score++;
+            localStorage.setItem('score', score);
+            updateScore();
+        });
+
+        document.getElementById("buy-autoclicker1").addEventListener("click", () => {
+            if (score >= 50) {
+                score -= 50;
+                autoclickers.autoclicker1++;
+                localStorage.setItem('autoclickers', JSON.stringify(autoclickers));
+                updateScore();
+            }
+        });
+
+        document.getElementById("buy-autoclicker2").addEventListener("click", () => {
+            if (score >= 150) {
+                score -= 150;
+                autoclickers.autoclicker2++;
+                localStorage.setItem('autoclickers', JSON.stringify(autoclickers));
+                updateScore();
+            }
+        });
+
+        document.getElementById("clear-data-btn").addEventListener("click", () => {
+            localStorage.clear();
+            location.reload();
+        });
+
+        setInterval(() => {
+            score += autoclickers.autoclicker1;
+            score += autoclickers.autoclicker2 * 5;
+            localStorage.setItem('score', score);
+            updateScore();
+        }, 1000);
+
+        // Управление музыкой
+const audio = document.getElementById("bg-music");
+audio.volume = 0.5;
+
+document.getElementById("toggle-music").addEventListener("click", function() {
+    if (audio.paused) {
+        audio.play();
+        this.textContent = "🔊";
+    } else {
+        audio.pause();
+        this.textContent = "🔈";
+    }
+});
+    </script>
+</body>
+</html>

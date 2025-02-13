@@ -1,0 +1,106 @@
+
+body {
+    font-family: 'Dancing Script', cursive;
+    margin: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Вертикальное расположение элементов */
+    justify-content: flex-start; /* Контент будет начинаться сверху */
+    align-items: center; /* Центрирует элементы по горизонтали */
+    height: 100vh; /* Занимает всю высоту экрана */
+    background: 
+    url('cloud.png') 5vw 3vh / 8vw no-repeat,
+    url('cloud.png') 10vw 40vh / 12vw no-repeat,
+    url('cloud.png') 25vw 70vh / 9vw no-repeat,
+    url('cloud.png') 25vw 25vh / 11vw no-repeat,
+    url('cloud.png') 50vw 50vh / 10vw no-repeat,
+    url('cloud.png') 60vw 80vh / 13vw no-repeat,
+    url('cloud.png') 75vw 30vh / 9vw no-repeat,
+    url('cloud.png') 85vw 60vh / 12vw no-repeat,
+    url('cloud.png') 90vw 4vh / 10vw no-repeat,
+    url('cloud.png') 5vw 85vh / 11vw no-repeat,
+    url('cloud.png') 30vw 95vh / 13vw no-repeat, /* Облако внизу */
+    url('cloud.png') 70vw 99vh / 12vw no-repeat, /* Еще одно облако у самого низа */
+    url('cloud.png') 90vw 92vh / 10vw no-repeat, /* Третье облако у низа */
+    #ffe6e6; /* Фон страницы */
+    filter: drop-shadow(5px 8px 10px rgba(0, 0, 0, 0.3));
+}
+
+header {
+    text-align: center;
+    font-size: 3vw;
+    color: #d63384;
+    padding: 20px 0;
+    text-shadow: 2px 2px 8px rgba(255, 105, 180, 2);
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column; /* Вертикальное расположение элементов */
+    justify-content: flex-start; /* Контент будет располагаться сверху */
+    align-items: center;
+    margin-top: 20px; /* Отступ сверху */
+    width: 100%; /* Занимает всю ширину */
+    height: auto; /* Позволяет элементам в контейнере занимать необходимую высоту */
+}
+
+.main {
+    font-family: 'Dancing Script', cursive;
+    text-align: center;
+    width: 70%; /* Ширина блока main */
+    min-height: 200px; /* Минимальная высота */
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 40px;
+    padding: 50px;
+    box-sizing: border-box; /* Учитывает padding и border в расчете ширины и высоты */
+    flex-grow: 1; /* Позволяет блоку расширяться */
+    font-size: clamp(26px, 2vw, 32px);
+    display: grid;
+    place-items: center; /* Центрирует содержимое по горизонтали и вертикали */
+    text-align: center;
+}
+
+.button-container {
+    margin-top: 30px; /* Отступ сверху для кнопки */
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    background-color: #d63384;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #c22a73;
+}
+
+/* Медиазапрос для планшетов (ширина экрана до 1024px) */
+@media (max-width: 1024px) {
+    header {
+        font-size: 4vw;
+    }
+
+    .main {
+        width: 80%;
+        height: 60vh;
+        padding: 30px;
+    }
+}
+
+/* Медиазапрос для мобильных устройств (ширина экрана до 768px) */
+@media (max-width: 768px) {
+    header {
+        font-size: 5vw;
+    }
+
+    .main {
+        width: 90%;
+        height: 70vh;
+        padding: 20px;
+    }
+}

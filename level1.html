@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моё сердечко ❤️</title>
+    <link rel="stylesheet" href="css/puzzle.css">
+</head>
+<body>
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+    <button id="toggle-music">🔈</button>
+    
+    <header>
+        <h1>С Днём Святого Валентина, Родная!</h1>
+    </header>
+    
+    <section id="puzzle-game">
+        <h2>Собери пазл</h2>
+        <div class="puzzle-container">
+            <canvas id="puzzle-canvas"></canvas>
+        </div>
+        <div id="completion-message" class="hidden">
+            <p>Поздравляем! Ты собрала пазл! 🎉</p>
+            <button id="next-level" onclick="window.location.href='level2.html'">Перейти на следующий уровень</button>
+        </div>
+    </section>
+    <script src="js/puzzle.js"></script>
+</body>
+</html>
